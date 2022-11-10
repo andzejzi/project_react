@@ -96,7 +96,7 @@ const Register = () => {
           {users.map((user, index) => (
             <li key={index}>
               {user.names} {user.surname}, {user.email}, {user.age} metai
-              <span onClick={() => handleDeleteUser(user)}>X</span>
+              <span onClick={() => handleDeleteUser(user)}> X</span>
             </li>
           ))}
         </ul>
