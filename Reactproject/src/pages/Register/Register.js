@@ -1,58 +1,65 @@
 import { useState, useEffect } from "react";
 import "./Register.css";
-import styled from "styled-components";
-
-const List = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-`;
+// import styled from "styled-components";
 
 const Register = () => {
   const [names, setNames] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const localTodos = JSON.parse(localStorage.getItem("todos"));
-    if (localTodos) {
-      setTodos(localTodos);
-    }
+    fetch("http://localhost:3001/Register")
+      .then((resp) => resp.json())
+      .then((response) => {
+        setUsers(response);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   const handleAddTodo = (event) => {
     event.preventDefault();
     if (names) {
-      setTodos((prevTodos) => [
-        ...prevTodos,
-        [`${names} ${surname} ${email} ${age}`],
-      ]);
-      setNames("");
-      setSurname("");
-      setEmail("");
-      setAge("");
-      localStorage.setItem(
-        "todos",
-        JSON.stringify([...todos, [`${names} ${surname} ${email} ${age}`]])
-      );
-      addUser();
+      const newUser = {
+        names,
+        surname,
+        email,
+        age,
+      };
+
+      const option = {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      };
+      fetch("http://localhost:3001/Register", option)
+        .then((resp) => resp.json())
+        .then(() => {
+          setUsers((prevUsers) => [...prevUsers, newUser]);
+          setNames("");
+          setSurname("");
+          setEmail("");
+          setAge("");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   };
 
-  const addUser = (user) => {
-    const option = {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(user),
-    };
-    fetch("http://localhost:3001/Register", option)
-      .then((resp) => resp.json())
-      .then((response) => {});
+  const handleDeleteUser = (user) => {
+    setUsers((prevUsers) => prevUsers.filter((prevUser) => prevUser !== user));
   };
+
+  // const handleDeleteId = () => {
+  //   fetch(`http://localhost:3001/Register/${id}`, {
+  //     method: "DELETE"}),
+  // }
 
   return (
     <div>
@@ -85,13 +92,14 @@ const Register = () => {
 
           <button type="submit">Add todo</button>
         </form>
-        <List>
-          {todos.map((todo, index) => (
-            <div key={index}>
-              <h3> {todo}</h3>
-            </div>
+        <ul>
+          {users.map((user, index) => (
+            <li key={index}>
+              {user.names} {user.surname}, {user.email}, {user.age} metai
+              <span onClick={() => handleDeleteUser(user)}>X</span>
+            </li>
           ))}
-        </List>
+        </ul>
       </div>
     </div>
   );

@@ -18,8 +18,6 @@ const mysqlConfig = {
 app.get("/", async (req, res) => {
   try {
     const con = await mysql.createConnection(mysqlConfig);
-    console.log("Success: " + con);
-    con.execute();
 
     // "CREATE TABLE Register(PersonID int, names varchar(255),surname varchar(255),email varchar(255), age varchar(255), PRIMARY KEY(PersonID))"
     res.send("Success");
@@ -34,7 +32,7 @@ app.get("/Register", async (req, res) => {
     const con = await mysql.createConnection(mysqlConfig);
     const register = req.body;
     const response = await con.execute(
-      "SELECT * FROM defaultdb.Register ORDER BY Age"
+      "SELECT * FROM defaultdb.Register ORDER BY PersonID"
     );
 
     res.send(response[0]);
@@ -59,10 +57,25 @@ app.post("/Register", async (req, res) => {
   }
 });
 
+app.delete("/Register/:id", async (req, res) => {
+  try {
+    const con = await mysql.createConnection(mysqlConfig);
+    const response = await con.execute(
+      `DELETE FROM Register WHERE PersonID=${req.params.id}`
+    );
+    res.send(response[0]);
+    await con.end();
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// http://localhost:3001/Register/1
+
 app.get("*", (req, res) => {
   res.status(404).send("Page not found:(");
 });
 
-app.listen(3001, () => {
-  console.log(`Server is running on port ${3001}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
