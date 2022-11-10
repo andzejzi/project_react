@@ -90,7 +90,7 @@ const Register = () => {
             onChange={(e) => setAge(e.target.value)}
           />
 
-          <button type="submit">Add todo</button>
+          <button type="submit">Add user</button>
         </form>
         <ul>
           {users.map((user, index) => (
