@@ -70,8 +70,6 @@ app.delete("/Register/:id", async (req, res) => {
   }
 });
 
-// http://localhost:3001/Register/1
-
 app.get("*", (req, res) => {
   res.status(404).send("Page not found:(");
 });
