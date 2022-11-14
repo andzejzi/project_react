@@ -56,10 +56,11 @@ const Register = () => {
     setUsers((prevUsers) => prevUsers.filter((prevUser) => prevUser !== user));
   };
 
-  // const handleDeleteId = () => {
-  //   fetch(`http://localhost:3001/Register/${id}`, {
-  //     method: "DELETE"}),
-  // }
+  const handleDeleteId = (id) => {
+    fetch(`http://localhost:3001/Register/${id}`, {
+      method: "DELETE"}),
+      onClick={() => handleDeleteUser(id)}
+  }
 
   return (
     <div>
